@@ -1,0 +1,533 @@
+<!--
+  ╔═════════════════════════════════════════════════════════════════╖
+  │  CEPHEUS SPACE - Threat Intelligence Dashboard                                             │
+  │  Squarespace Code Block Embed                                                         │
+  │                                                                                        │
+  │  HOW TO EMAED8�NOT NEEDED - this file IS the embed                                 │
+  │  1. In Squarespace editor, add a new page                                             │
+  │  2. Add a "Code Block" (or "Embed Block") to the page                               │
+  │  3. Paste this entire file into the code block                                       │
+  │  4. For full-width: set section to "Full Bleed" layout                             │
+  │                                                                                        │
+  │  TO CONNECT YOUR LIVE BACKEND (when ready):                                          │
+  │  Set USE_MOCK_DATA: false and update API_BASE_URL                                   │
+  ╖════════════════════════════════════════════════════════════════════╙
+-->
+
+<style>
+  /* ════════════════════════════════════════
+     BASE STYLES (scoped under #cti-root)
+     ════════════════════════════════════════ */
+  #cti-root {
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    background: #0a0e1a;
+    color: #c9e4ff;
+    padding: 32px;
+    max-width: 1200px;
+    margin: 0 auto;
+    box-sizing: border-box;
+  }
+
+  /* Header */
+  #cti-root .cti-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  #cti-root .cti-header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  #cti-root .cti-logo-icon { font-size: 32px; }
+  #cti-root .cti-brand-name { font-size: 20px; font-weight: 700; color: #7eb8ff; }
+  #cti-root .cti-brand-sub  { font-size: 11px; color: #5a7a9a; text-transform: uppercase; letter-spacing: 1.5px; }
+
+  /* Status badge */
+  #cti-root .cti-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #05150f;
+    border: 1px solid #0d4428;
+    color: #22c55e;
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 6px;
+  }
+  #cti-root .cti-status-dot {
+    width: 8px; height: 8px;
+    background: #22c55e;
+    border-radius: 50%;
+    animation: ctiPulse 2s infinite;
+  }
+  @keyframes ctiPulse {
+    0, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+  #cti-root .cti-refresh-time { font-size: 11px; color: #2d4a6a; }
+
+  /* Stat cards */
+  #cti-root .cti-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+  @media (max-width: 900px) {
+    #cti-root .cti-stats { grid-template-columns: repeat(2, 1fr); }
+ 
+  }
+  @media (max-width: 700px) {
+    #cti-root .cti-stats { grid-template-columns: repeat(2, 1fr); }
+  }
+  #cti-root .cti-stat-card {
+    background: #111827;
+    border: 1px solid #1e2d44;
+    border-radius: 12px;
+    padding: 18px 20px;
+  }
+  #cti-root .cti-stat-icon  { font-size: 20px; margin-bottom: 8px; }
+  #cti-root .cti-stat-value { font-size: 30px; font-weight: 800; }
+  #cti-root .cti-stat-label { font-size: 11px; color: #5a7a9a; margin-top: 4px; }
+
+  /* Tabs */
+  #cti-root .cti-tabs {
+    display: flex;
+    gap: 4px;
+    background: #111827;
+    padding: 4px;
+    border-radius: 10px;
+    width: fit-content;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+  }
+  #cti-root .cti-tab {
+    padding: 8px 18px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    color: #5a7a9a;
+    background: transparent;
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+  #cti-root .cti-tab.active {
+    background: #1d4ed8;
+    color: #fff;
+  }
+  #cti-root .cti-tab:hover:not(.active) { color: #a0b4c8; }
+
+  /* Panel */
+  #cti-root .cti-panel {
+    background: #111827;
+    border: 1px solid #1e2d44;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  #cti-root .cti-panel-header {
+    padding: 14px 20px;
+    border-bottom: 1px solid #1e2d44;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  #cti-root .cti-panel-title {
+    font-weight: 600;
+    color: #7eb8ff;
+    font-size: 14px;
+  }
+  #cti-root .cti-panel-badge {
+    font-size: 11px;
+    color: #5a7a9a;
+    background: #0a0e1a;
+    padding: 3px 10px;
+    border-radius: 20px;
+  }
+
+  /* Row */
+  #cti-root .cti-row {
+    padding: 14px 20px;
+    border-bottom: 1px solid #0f1929;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  #cti-root .cti-row:last-child { border-bottom: none; }
+  #cti-root .cti-row-main { flex: 1; min-width: 180px; }
+  #cti-root .cti-row-title {
+    font-weight: 500;
+    margin-bottom: 5px;
+    font-size: 14px;
+  }
+  #cti-root .cti-row-sub {
+    font-size: 12px;
+    color: #a0b4c8;
+    margin-bottom: 4px;
+  }
+  #cti-root .cti-row-meta { font-size: 11px; color: #5a7a9a; }
+
+  /* Tags */
+  #cti-root .cti-tags {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+    margin-top: 4px;
+  }
+  #cti-root .cti-tag {
+    font-size: 11px;
+    background: #1e2d44;
+    color: #7eb8ff;
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+
+  /* Badges */
+  #cti-root .cti-badge {
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    white-space: nowrap;
+  }
+
+  /* IOC counter */
+  #cti-root .cti-ioc { text-align: center; min-width: 44px; }
+  #cti-root .cti-ioc-val { font-size: 20px; font-weight: 700; color: #7eb8ff; }
+  #cti-root .cti-ioc-lbl { font-size: 10px; color: #5a7a9a; }
+
+  /* CVSS score */
+  #cti-root .cti-cvss { text-align: center; min-width: 54px; }
+  #cti-root .cti-cvss-val { font-size: 24px; font-weight: 800; }
+  #cti-root .cti-cvss-lbl { font-size: 10px; color: #5a7a9a; }
+
+  /* Mono */
+  #cti-root .mono { font-family: 'Courier New', monospace; }
+
+  /* Footer */
+  #cti-root .cti-footer {
+    margin-top: 24px;
+    padding-top: 14px;
+    border-top: 1px solid #1a2535;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  #cti-root .cti-footer span { font-size: 11px; color: #2d4a6a; }
+
+  /* Loading / Error */
+  #cti-root .cti-loader {
+    text-align: center;
+    padding: 40px;
+    color: #5a7a9a;
+    font-size: 14px;
+  }
+</style>
+
+<div id="cti-root">
+  <!-- Header -->
+  <div class="cti-header">
+    <div class="cti-header-left">
+      <span class="cti-logo-icon">🚀</span>
+      <div>
+        <div class="cti-brand-name">Cepheus Space</div>
+        <div class="cti-brand-sub">Threat Intelligence Center</div>
+      </div>
+    </div>
+    <div style="text-align:right">
+      <div class="cti-status-badge">
+        <span class="cti-status-dot"></span>
+        Feeds Active
+      </div>
+      <div class="cti-refresh-time" id="cti-refresh-label">Refreshes every 15 min</div>
+    </div>
+  </div>
+
+  <!-- Stat Cards -->
+  <div class="cti-stats" id="cti-stats">
+    <div class="cti-stat-card">
+      <div class="cti-stat-icon">📡</div>
+      <div class="cti-stat-value" id="stat-pulses" style="color:#7eb8ff">—</div>
+      <div class="cti-stat-label">Active TI Pulses</div>
+    </div>
+    <div class="cti-stat-card">
+      <div class="cti-stat-icon">🔴</div>
+      <div class="cti-stat-value" id="stat-cves" style="color:#ff3b3b">—</div>
+      <div class="cti-stat-label">Critical CVEs</div>
+    </div>
+    <div class="cti-stat-card">
+      <div class="cti-stat-icon">🌐</div>
+      <div class="cti-stat-value" id="stat-assets" style="color:#ff8c00">—</div>
+      <div class="cti-stat-label">Exposed Assets</div>
+    </div>
+    <div class="cti-stat-card">
+      <div class="cti-stat-icon">⚡</div>
+      <div class="cti-stat-value" id="stat-new" style="color:#ffd700">—</div>
+      <div class="cti-stat-label">New Threats Today</div>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="cti-tabs">
+    <button class="cti-tab active" onclick="ctiShowTab('otx', this)">📡 OTX Pulses</button>
+    <button class="cti-tab" onclick="ctiShowTab('cves', this)">🛡️ CVE Feed</button>
+    <button class="cti-tab" onclick="ctiShowTab('shodan', this)">🌐 Shodan</button>
+    <button class="cti-tab" onclick="ctiShowTab('misp', this)">🔗 MISP</button>
+  </div>
+
+  <!-- Panel -->
+  <div class="cti-panel" id="cti-panel">
+    <div class="cti-loader">Loading threat data…</div>
+  </div>
+
+  <!-- Footer -->
+  <div class="cti-footer">
+    <span>Cepheus Space · Threat Intelligence Portal · v0.1</span>
+    <span>Sources: AlienVault OTX · NIST NVD · Shodan · MISP</span>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════
+//  CONFIG  — update these when your backend is ready
+// ═══════════════════════════════════════════════════
+const CTI_CONFIG = {
+  USE_MOCK_DATA:  true,                          // set false when backend is live
+  API_BASE_URL:   'https://api.cepheusspace.com', // your Railway / Render URL
+  REFRESH_MS:     15 * 60 * 1000,               // 15 minutes
+};
+
+// ═══════════════════════════════════════════════════
+//  MOCK DATA  (mirrors real API response shapes)
+// ═══════════════════════════════════════════════════
+const MOCK = {
+  summary: {
+    active_pulses: 127, critical_cves: 8,
+    exposed_assets: 342, new_threats_today: 23,
+  },
+  otx: { pulses: [
+    { id:1, name:'APT29 Cozy Bear Infrastructure',         severity:'critical', iocs:47,  created:'2026-03-14', tags:['APT29','Russia','C2'] },
+    { id:2, name:'Space Industry Phishing Campaign',       severity:'high',     iocs:23,  created:'2026-03-13', tags:['Phishing','Aerospace'] },
+    { id:3, name:'Satellite Ground Station Probes',        severity:'medium',   iocs:15,  created:'2026-03-12', tags:['ICS','Satellite'] },
+    { id:4, name:'Supply Chain Compromise – Firmware',     severity:'high',     iocs:89,  created:'2026-03-11', tags:['Supply Chain','Firmware'] },
+    { id:5, name:'DDoS Botnet Targeting EU Infrastructure',severity:'medium',   iocs:312, created:'2026-03-10', tags:['DDoS','EU'] },
+  ]},
+  cves: { cves: [
+    { id:'CVE-2026-1337', cvss:9.8, description:'Remote code execution in satellite telemetry software',    vendor:'AeroSoft',   date:'2026-03-14' },
+    { id:'CVE-2026-1289', cvss:7.5, description:'Authentication bypass in ground station management API',   vendor:'SpaceCtrl',  date:'2026-03-13' },
+    { id:'CVE-2026-0991', cvss:8.1, description:'SQL injection in space mission planning web portal',       vendor:'OrbitalDB',  date:'2026-03-11' },
+    { id:'CVE-2026-0872', cvss:6.5, description:'Privilege escalation in Linux-based telemetry systems',   vendor:'Various',    date:'2026-03-10' },
+  ]},
+  shodan: { assets: [
+    { ip:'185.23.xx.xx', port:22,  org:'AeroGround GmbH',  country:'DE', product:'OpenSSH 7.4',          risk:'high' },
+    { ip:'91.108.xx.xx', port:502, org:'SpaceTech AS',     country:'NO', product:'Modbus (ICS)',          risk:'critical' },
+    { ip:'45.89.xx.xx',  port:80,  org:'SatLink Ltd',      country:'GB', product:'Apache 2.2.34 (EOL)',   risk:'medium' },
+    { ip:'194.33.xx.xx', port:23,  org:'Orbital Systems',  country:'SE', product:'Telnet (unencrypted)',  risk:'critical' },
+  ]},
+  misp: { events: [
+    { uuid:'MISP-2026-0341', info:'APT Ground Track Campaign',    date:'2026-03-14', threat_level:'High',   attribute_count:47, tag_names:['tlp:amber','apt:apt29'] },
+    { uuid:'MISP-2026-0339', info:'Space Phishing Infrastructure', date:'2026-03-13', threat_level:'High',   attribute_count:23, tag_names:['tlp:white','phishing'] },
+    { uuid:'MISP-2026-0327', info:'Satellite Malware Dropper',     date:'2026-03-11', threat_level:'Medium', attribute_count:12, tag_names:['tlp:green','malware'] },
+    { uuid:'MISP-2026-0310', info:'ICS Recon Activity',            date:'2026-03-09', threat_level:'Medium', attribute_count:8,  tag_names:['tlp:white','ics','scada'] },
+  ]},
+};
+
+// ═══════════════════════════════════════════════════
+//  HELPERS
+// ═══════════════════════════════════════════════════
+const SEV_COLOR = { critical:'#ff3b3b', high:'#ff8c00', medium:'#ffd700', low:'#4caf50' };
+
+function cvssColor(s) {
+  return s >= 9 ? '#ff3b3b' : s >= 7 ? '#ff8c00' : s >= 4 ? '#ffd700' : '#4caf50';
+}
+
+function badge(label, color) {
+  return `<span class="cti-badge" style="background:${color}22;color:${color}">${label}</span>`;
+}
+
+function tag(t) {
+  return `<span class="cti-tag">${t}</span>`;
+}
+
+function escHtml(str) {
+  return String(str)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ═══════════════════════════════════════════════════
+//  DATA FETCHING
+// ═══════════════════════════════════════════════════
+async function fetchData(endpoint) {
+  if (CTI_CONFIG.USE_MOCK_DATA) {
+    await new Promise(r => setTimeout(r, 300)); // simulate network delay
+    return MOCK[endpoint] || {};
+  }
+  const res = await fetch(`${CTI_CONFIG.API_BASE_URL}/api/${endpoint}`);
+  if (!res.ok) throw new Error(`API error: ${res.status}`);
+  return res.json();
+}
+
+// ═══════════════════════════════════════════════════
+//  RENDER PANELS
+// ═══════════════════════════════════════════════════
+function renderOTX(data) {
+  const rows = (data.pulses || []).map(p => `
+    <div class="cti-row">
+      <div class="cti-row-main">
+        <div class="cti-row-title">${escHtml(p.name)}</div>
+        <div class="cti-tags">${(Z.tags||[]).map(tag).join('')}</div>
+      </div>
+      <div class="cti-ioc">
+        <div class="cti-ioc-val">${p.iocs}</div>
+        <div class="cti-ioc-lbl">IOCs</div>
+      </div>
+      <div class="cti-row-meta">${p.created}</div>
+      ${badge(p.severity, SEV_COLOR[p.severity] || '#888')}
+    </div>`).join('');
+
+  return `
+    <div class="cti-panel-header">
+      <span class="cti-panel-title">📡 AlienVault OTX — Active Threat Pulses</span>
+      <span class="cti-panel-badge">Live · Space &amp; Aerospace</span>
+    </div>
+    ${rows || '<div class="cti-loader">No pulses found.</div>'}`;
+}
+
+function renderCVEs(data) {
+  const rows = (data.cves || []).map(c => `
+    <div class="cti-row">
+      <div class="cti-row-main">
+        <div class="cti-row-title mono" style="color:#7eb8ff">${escHtml(c.id)}</div>
+        <div class="cti-row-sub">${escHtml(c.description)}</div>
+        <div class="cti-row-meta">Vendor: ${escHtml(c.vendor)} · ${c.date}</div>
+      </div>
+      <div class="cti-cvss">
+        <div class="cti-cvss-val" style="color:${cvssColor(c.cvss)}">${c.cvss}</div>
+        <div class="cti-cvss-lbl">CVSS v3</div>
+      </div>
+    </div>`).join('');
+
+  return `
+    <div class="cti-panel-header">
+      <span class="cti-panel-title">🛡️ NVD / CVE Feed — Space &amp; Aerospace Vulnerabilities</span>
+      <span class="cti-panel-badge">Filtered · CVSS ≥ 6.0</span>
+    </div>
+    ${rows || '<div class="cti-loader">No CVEs found.</div>'}`;
+}
+
+function renderShodan(data) {
+  const rows = (data.assets || []).map(a => `
+    <div class="cti-row">
+      <div class="cti-row-main">
+        <div class="cti-row-title mono" style="color:#7eb8ff">${escHtml(a.ip)}:${a.port}</div>
+        <div class="cti-row-sub">${escHtml(a.product)} · ${escHtml(a.org)}</div>
+        <div class="cti-row-meta">Country: ${escHtml(a.country)}</div>
+      </div>
+      ${badge(a.risk, SEV_COLOR[a.risk] || '#888')}
+    </div>`).join('');
+
+  return `
+    <div class="cti-panel-header">
+      <span class="cti-panel-title">🌐 Shodan — Exposed Space Industry Assets</span>
+      <span class="cti-panel-badge">Org filter · Aerospace &amp; Satellite</span>
+    </div>
+    ${rows || '<div class="cti-loader">No assets found.</div>'}`;
+}
+
+function renderMISP(data) {
+  const rows = (data.events || []).map(e => `
+    <div class="cti-row">
+      <div class="cti-row-main">
+        <div class="cti-row-title mono" style="color:#7eb8ff">${escHtml(e.uuid)}</div>
+        <div class="cti-row-sub">${escHtml(e.info)}</div>
+        <div class="cti-tags">${(e.tag_names||[]).map(tag).join('')}</div>
+        <div class="cti-row-meta" style="margin-top:4px">${e.date} · ${e.attribute_count} attributes</div>
+      </div>
+      ${badge(e.threat_level, e.threat_level==='High' ? '#4caf50' : '#ffd700')}
+    </div>`).join('');
+
+  return `
+    <div class="cti-panel-header">
+      <span class="cti-panel-title">🔗 MISP — Shared Threat Indicators</span>
+      <span class="cti-panel-badge">Community feed · Filtered</span>
+    </div>
+    ${rows || '<div class="cti-loader">No MISP events found.</div>'}`;
+}
+
+const RENDERERS = { otx: renderOTX, cves: renderCVEs, shodan: renderShodan, misp: renderMISP };
+const ENDPOINTS = { otx: 'otx',    cves: 'cves',    shodan: 'shodan',    misp: 'misp' };
+
+// ═══════════════════════════════════════════════════
+//  TAB SWITCHING
+// ═══════════════════════════════════════════════════
+let currentTab = 'otx';
+
+async function ctiShowTab(tab, btnEl) {
+  currentTab = tab;
+
+  // Update tab active state
+  document.querySelectorAll('#cti-root .cti-tab').forEach(b => b.classList.remove('active'));
+  if (btnEl) btnEl.classList.add('active');
+
+  const panel = document.getElementById('cti-panel');
+  panel.innerHTML = '<div class="cti-loader">Loading…</div>';
+
+  try {
+    const data = await fetchData(ENDPOINTS[tab]);
+    panel.innerHTML = RENDERERS[tab](data);
+  } catch (err) {
+    panel.innerHTML = `<div class="cti-loader" style="color:#ff3b3b">
+      ⚠️ Failed to load data: ${escHtml(err.message)}
+    </div>`;
+  }
+}
+
+// ═══════════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════════
+async function ctiInit() {
+  // Load summary stats
+  try {
+    const s = await fetchData('summary');
+    document.getElementById('stat-pulses').textContent = s.active_pulses  ?? '—';
+    document.getElementById('stat-cves').textContent   = s.critical_cves  ?? '—';
+    document.getElementById('stat-assets').textContent = s.exposed_assets ?? '—';
+    document.getElementById('stat-new').textContent    = s.new_threats_today ?? '—';
+  } catch(_) {}
+
+  // Load initial tab
+  ctiShowTab('otx', document.querySelector('#cti-root .cti-tab'));
+
+  // Show last-refreshed time
+  const label = document.getElementById('cti-refresh-label');
+  label.textContent = 'Last updated: ' + new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) + ' · Auto-refreshes every 15 min';
+
+  // Auto-refresh
+  setInterval(() => {
+    ctiShowTab(currentTab, null);
+    label.textContent = 'Last updated: ' + new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) + ' · Auto-refreshes every 15 min';
+  }, CTI_CONFIG.REFRESH_MS);
+}
+
+// Run after DOM is ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', ctiInit);
+} else {
+  ctiInit();
+}
+</script>
