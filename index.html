@@ -390,7 +390,7 @@ function renderOTX(data) {
     <div class="cti-row">
       <div class="cti-row-main">
         <div class="cti-row-title">${escHtml(p.name)}</div>
-        <div class="cti-tags">${(Z.tags||[]).map(tag).join('')}</div>
+        <div class="cti-tags">${(p.tags||[]).map(tag).join('')}</div>
       </div>
       <div class="cti-ioc">
         <div class="cti-ioc-val">${p.iocs}</div>
