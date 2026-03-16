@@ -1,0 +1,221 @@
+  /* ════════════════════════════════════════
+     BASE STYLES (scoped under #cti-root)
+     ════════════════════════════════════════ */
+  #cti-root {
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    background: #0a0e1a;
+    color: #c9e4ff;
+    padding: 32px;
+    max-width: 1200px;
+    margin: 0 auto;
+    box-sizing: border-box;
+  }
+
+  /* Header */
+  #cti-root .cti-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  #cti-root .cti-header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  #cti-root .cti-logo-icon { font-size: 32px; }
+  #cti-root .cti-brand-name { font-size: 20px; font-weight: 700; color: #7eb8ff; }
+  #cti-root .cti-brand-sub  { font-size: 11px; color: #5a7a9a; text-transform: uppercase; letter-spacing: 1.5px; }
+
+  /* Status badge */
+  #cti-root .cti-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #05150f;
+    border: 1px solid #0d4428;
+    color: #22c55e;
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 6px;
+  }
+  #cti-root .cti-status-dot {
+    width: 8px; height: 8px;
+    background: #22c55e;
+    border-radius: 50%;
+    animation: ctiPulse 2s infinite;
+  }
+  @keyframes ctiPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+  #cti-root .cti-refresh-time { font-size: 11px; color: #2d4a6a; }
+
+  /* Stat cards */
+  #cti-root .cti-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+  @media (max-width: 900px) {
+    #cti-root .cti-stats { grid-template-columns: repeat(2, 1fr); }
+ 
+  }
+  @media (max-width: 700px) {
+    #cti-root .cti-stats { grid-template-columns: repeat(2, 1fr); }
+  }
+  #cti-root .cti-stat-card {
+    background: #111827;
+    border: 1px solid #1e2d44;
+    border-radius: 12px;
+    padding: 18px 20px;
+  }
+  #cti-root .cti-stat-icon  { font-size: 20px; margin-bottom: 8px; }
+  #cti-root .cti-stat-value { font-size: 30px; font-weight: 800; }
+  #cti-root .cti-stat-label { font-size: 11px; color: #5a7a9a; margin-top: 4px; }
+
+  /* Tabs */
+  #cti-root .cti-tabs {
+    display: flex;
+    gap: 4px;
+    background: #111827;
+    padding: 4px;
+    border-radius: 10px;
+    width: fit-content;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+  }
+  #cti-root .cti-tab {
+    padding: 8px 18px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    color: #5a7a9a;
+    background: transparent;
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+  #cti-root .cti-tab.active {
+    background: #1d4ed8;
+    color: #fff;
+  }
+  #cti-root .cti-tab:hover:not(.active) { color: #a0b4c8; }
+
+  /* Panel */
+  #cti-root .cti-panel {
+    background: #111827;
+    border: 1px solid #1e2d44;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  #cti-root .cti-panel-header {
+    padding: 14px 20px;
+    border-bottom: 1px solid #1e2d44;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  #cti-root .cti-panel-title {
+    font-weight: 600;
+    color: #7eb8ff;
+    font-size: 14px;
+  }
+  #cti-root .cti-panel-badge {
+    font-size: 11px;
+    color: #5a7a9a;
+    background: #0a0e1a;
+    padding: 3px 10px;
+    border-radius: 20px;
+  }
+
+  /* Row */
+  #cti-root .cti-row {
+    padding: 14px 20px;
+    border-bottom: 1px solid #0f1929;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  #cti-root .cti-row:last-child { border-bottom: none; }
+  #cti-root .cti-row-main { flex: 1; min-width: 180px; }
+  #cti-root .cti-row-title {
+    font-weight: 500;
+    margin-bottom: 5px;
+    font-size: 14px;
+  }
+  #cti-root .cti-row-sub {
+    font-size: 12px;
+    color: #a0b4c8;
+    margin-bottom: 4px;
+  }
+  #cti-root .cti-row-meta { font-size: 11px; color: #5a7a9a; }
+
+  /* Tags */
+  #cti-root .cti-tags {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+    margin-top: 4px;
+  }
+  #cti-root .cti-tag {
+    font-size: 11px;
+    background: #1e2d44;
+    color: #7eb8ff;
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+
+  /* Badges */
+  #cti-root .cti-badge {
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    white-space: nowrap;
+  }
+
+  /* IOC counter */
+  #cti-root .cti-ioc { text-align: center; min-width: 44px; }
+  #cti-root .cti-ioc-val { font-size: 20px; font-weight: 700; color: #7eb8ff; }
+  #cti-root .cti-ioc-lbl { font-size: 10px; color: #5a7a9a; }
+
+  /* CVSS score */
+  #cti-root .cti-cvss { text-align: center; min-width: 54px; }
+  #cti-root .cti-cvss-val { font-size: 24px; font-weight: 800; }
+  #cti-root .cti-cvss-lbl { font-size: 10px; color: #5a7a9a; }
+
+  /* Mono */
+  #cti-root .mono { font-family: 'Courier New', monospace; }
+
+  /* Footer */
+  #cti-root .cti-footer {
+    margin-top: 24px;
+    padding-top: 14px;
+    border-top: 1px solid #1a2535;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  #cti-root .cti-footer span { font-size: 11px; color: #2d4a6a; }
+
+  /* Loading / Error */
+  #cti-root .cti-loader {
+    text-align: center;
+    padding: 40px;
+    color: #5a7a9a;
+    font-size: 14px;
+  }

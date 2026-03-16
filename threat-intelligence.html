@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Threat Intelligence - CEPHEUS SPACE</title>
+  <meta name="description" content="Real-time threat intelligence dashboard for space operations. Monitor active pulses, CVEs, IOCs, and exposed assets.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* ── Page header (matches services.html pattern) ── */
+    .page-hero {
+      background: linear-gradient(135deg, #0a0e1a 0%, #111827 100%);
+      border-bottom: 1px solid #1e2d44;
+      padding: 40px 0 32px;
+    }
+    .page-hero-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .page-hero h1 {
+      font-size: 28px;
+      font-weight: 700;
+      color: #7eb8ff;
+      margin: 0 0 4px;
+    }
+    .page-hero p {
+      font-size: 14px;
+      color: #5a7a9a;
+      margin: 0;
+    }
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #05150f;
+      border: 1px solid #0d4428;
+      color: #22c55e;
+      padding: 6px 16px;
+      border-radius: 5px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      background: #22c55e;
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.3; }
+    }
+    .refresh-time {
+      font-size: 11px;
+      color: #2d4a6a;
+      margin-top: 8px;
+    }
+
+    /* ── Stat cards (extend .card) ── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+    @media (max-width: 900px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 480px) { .stats-grid { grid-template-columns: 1fr 1fr; } }
+
+    .stat-card {
+      background: #111827;
+      border: 1px solid #1e2d44;
+      border-radius: 12px;
+      padding: 20px;
+    }
+    .stat-icon  { font-size: 22px; margin-bottom: 10px; }
+    .stat-value { font-size: 32px; font-weight: 800; color: #c9e4ff; line-height: 1; }
+    .stat-label { font-size: 11px; color: #5a7a9a; margin-top: 6px; text-transform: uppercase; letter-spacing: 0.8px; }
+
+    /* ── Tabs ── */
+    .tab-bar {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .tab-btn {
+      padding: 8px 20px;
+      border: 1px solid #1e2d44;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+      color: #5a7a9a;
+      background: #111827;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+    .tab-btn:hover:not(.active) {
+      color: #c9e4ff;
+      border-color: #2d4a6a;
+    }
+    .tab-btn.active {
+      background: #1d4ed8;
+      border-color: #1d4ed8;
+      color: #fff;
+    }
+
+    /* ── Panel (extends .card) ── */
+    .panel {
+      background: #111827;
+      border: 1px solid #1e2d44;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .panel-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid #1e2d44;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .panel-title {
+      font-weight: 600;
+      color: #7eb8ff;
+      font-size: 14px;
+    }
+    .panel-count {
+      font-size: 11px;
+      color: #5a7a9a;
+      background: #0a0e1a;
+      padding: 3px 12px;
+      border-radius: 5px;
+      border: 1px solid #1e2d44;
+    }
+
+    /* ── Rows ── */
+    .item-row {
+      padding: 16px 20px;
+      border-bottom: 1px solid #0f1929;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      transition: background 0.15s;
+    }
+    .item-row:last-child { border-bottom: none; }
+    .item-row:hover { background: #0d1525; }
+    .item-main { flex: 1; min-width: 180px; }
+    .item-title { font-weight: 500; font-size: 14px; color: #c9e4ff; margin-bottom: 4px; }
+    .item-sub   { font-size: 12px; color: #a0b4c8; margin-bottom: 3px; }
+    .item-meta  { font-size: 11px; color: #5a7a9a; }
+
+    /* ── Tags ── */
+    .tags {
+      display: flex;
+      gap: 5px;
+      flex-wrap: wrap;
+      margin-top: 6px;
+    }
+    .tag {
+      font-size: 11px;
+      background: #1e2d44;
+      color: #7eb8ff;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: 500;
+    }
+
+    /* ── Severity badge ── */
+    .badge {
+      padding: 4px 12px;
+      border-radius: 5px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+    }
+
+    /* ── IOC / CVSS ── */
+    .ioc-block  { text-align: center; min-width: 44px; }
+    .ioc-val    { font-size: 22px; font-weight: 700; color: #7eb8ff; }
+    .ioc-lbl    { font-size: 10px; color: #5a7a9a; text-transform: uppercase; }
+    .cvss-block { text-align: center; min-width: 54px; }
+    .cvss-val   { font-size: 26px; font-weight: 800; }
+    .cvss-lbl   { font-size: 10px; color: #5a7a9a; text-transform: uppercase; }
+
+    /* ── Mono ── */
+    .mono { font-family: 'Courier New', monospace; font-size: 13px; }
+
+    /* ── Loading ── */
+    .loader {
+      text-align: center;
+      padding: 48px;
+      color: #5a7a9a;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header — matches services.html pattern -->
+  <header>
+    <nav class="container">
+      <div class="logo">
+        CEPHEUS SPACE
+        <span>Cybersecurity Startup</span>
+      </div>
+      <ul>
+        <li><a href="https://www.cepheusspace.com">Home</a></li>
+        <li><a href="https://www.cepheusspace.com/product">Product</a></li>
+        <li><a href="services.html">Services</a></li>
+        <li><a href="https://www.cepheusspace.com/about">About</a></li>
+        <li><a href="https://www.cepheusspace.com/contact">Contact</a></li>
+        <li><a href="threat-intelligence.html" style="color:#7eb8ff;font-weight:600;">Threat Intel</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Page hero -->
+  <div class="page-hero">
+    <div class="container">
+      <div class="page-hero-inner">
+        <div>
+          <h1>Threat Intelligence</h1>
+          <p>Real-time monitoring for space operations security</p>
+          <div class="refresh-time" id="refresh-label">Last updated: Loading...</div>
+        </div>
+        <div class="status-badge">
+          <div class="status-dot"></div>
+          System Online
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dashboard content -->
+  <section class="section">
+    <div class="container">
+
+      <!-- Stat cards -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon">📡</div>
+          <div class="stat-value" id="stat-pulses">—</div>
+          <div class="stat-label">Active Pulses</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">⚠️</div>
+          <div class="stat-value" id="stat-cves">—</div>
+          <div class="stat-label">Critical CVEs</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">🛰️</div>
+          <div class="stat-value" id="stat-assets">—</div>
+          <div class="stat-label">Exposed Assets</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">🔥</div>
+          <div class="stat-value" id="stat-new">—</div>
+          <div class="stat-label">New Threats Today</div>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="showTab('otx')">OTX Pulses</button>
+        <button class="tab-btn" onclick="showTab('cve')">CVEs</button>
+        <button class="tab-btn" onclick="showTab('ioc')">IOCs</button>
+        <button class="tab-btn" onclick="showTab('assets')">Assets</button>
+      </div>
+
+      <!-- Panels -->
+      <div id="panel-otx"    class="panel"></div>
+      <div id="panel-cve"    class="panel" style="display:none"></div>
+      <div id="panel-ioc"    class="panel" style="display:none"></div>
+      <div id="panel-assets" class="panel" style="display:none"></div>
+
+    </div>
+  </section>
+
+  <!-- Footer — matches site pattern -->
+  <footer>
+    <div class="container">
+      <p>&copy; 2026 Cepheus Space AB. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+  // ═══════════════════════════════════
+  //  CONFIG
+  // ═══════════════════════════════════
+  const CONFIG = {
+    USE_MOCK_DATA: true,
+    API_BASE_URL:  'https://api.cepheus.space',
+    REFRESH_MS:    900000,
+  };
+
+  // ═══════════════════════════════════
+  //  MOCK DATA
+  // ═══════════════════════════════════
+  const MOCK = {
+    summary: { active_pulses: 247, critical_cves: 12, exposed_assets: 89, new_threats_today: 5 },
+    otx: [
+      { title: 'Satellite Communication Interception', sub: 'High-risk vulnerability in ground station protocols',      meta: '2 hours ago',  tags: ['satellite','communication'], ioc: 3, cvss: 8.5 },
+      { title: 'Orbital Debris Tracking Anomaly',      sub: 'Unusual patterns detected in debris monitoring systems',   meta: '4 hours ago',  tags: ['orbital','debris'],         ioc: 1, cvss: 6.2 },
+      { title: 'GPS Spoofing Attempt',                 sub: 'Spoofing signals targeting navigation satellites',          meta: '6 hours ago',  tags: ['gps','spoofing'],           ioc: 7, cvss: 9.1 },
+      { title: 'Command Injection Vulnerability',      sub: 'Potential injection in mission control commands',           meta: '8 hours ago',  tags: ['command','injection'],      ioc: 2, cvss: 7.8 },
+      { title: 'Data Exfiltration – Ground Station',  sub: 'Unauthorized data transfer detected',                      meta: '12 hours ago', tags: ['data','exfiltration'],      ioc: 5, cvss: 8.0 },
+    ],
+    cve: [
+      { title: 'CVE-2026-001', sub: 'Buffer overflow in satellite firmware',          meta: '2026-01-15', tags: ['firmware','buffer'],      cvss: 9.8 },
+      { title: 'CVE-2026-002', sub: 'Weak encryption in communication protocols',     meta: '2026-01-10', tags: ['encryption','protocol'],  cvss: 8.7 },
+      { title: 'CVE-2026-003', sub: 'SQL injection in ground station database',       meta: '2026-01-08', tags: ['sql','injection'],         cvss: 9.1 },
+      { title: 'CVE-2026-004', sub: 'Cross-site scripting in web interface',          meta: '2026-01-05', tags: ['xss','web'],               cvss: 7.4 },
+      { title: 'CVE-2026-005', sub: 'Privilege escalation in admin panel',            meta: '2026-01-03', tags: ['privilege','escalation'],  cvss: 8.2 },
+    ],
+    ioc: [
+      { type: 'IP',     value: '192.168.1.100',                                                                   meta: 'Suspicious login attempts', tags: ['ip','login']        },
+      { type: 'Domain', value: 'malicious.satellite.net',                                                         meta: 'Phishing domain',           tags: ['domain','phishing'] },
+      { type: 'Hash',   value: 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', meta: 'Malware sample',           tags: ['hash','malware']    },
+      { type: 'URL',    value: 'http://evil.com/payload',                                                         meta: 'Malicious download link',   tags: ['url','download']    },
+      { type: 'Email',  value: 'attacker@badguy.com',                                                             meta: 'Spam campaign',             tags: ['email','spam']      },
+    ],
+    assets: [
+      { name: 'Satellite Alpha-1',       status: 'exposed',    meta: 'Port 22 open',             tags: ['satellite','ssh']       },
+      { name: 'Ground Station Beta',     status: 'vulnerable', meta: 'Outdated firmware',        tags: ['ground','firmware']     },
+      { name: 'Mission Control Gamma',   status: 'monitored',  meta: 'Active threats detected',  tags: ['mission','control']     },
+      { name: 'Communication Hub Delta', status: 'secure',     meta: 'All systems green',        tags: ['communication','hub']   },
+      { name: 'Orbital Platform Epsilon',status: 'warning',    meta: 'Potential breach detected',tags: ['orbital','platform']    },
+    ],
+  };
+
+  // ═══════════════════════════════════
+  //  HELPERS
+  // ═══════════════════════════════════
+  async function load(endpoint) {
+    if (CONFIG.USE_MOCK_DATA)
+      return new Promise(r => setTimeout(() => r(MOCK[endpoint]), 400));
+    const res = await fetch(`${CONFIG.API_BASE_URL}/${endpoint}`);
+    return res.json();
+  }
+
+  function cvssColor(score) {
+    if (score >= 9) return '#dc2626';
+    if (score >= 7) return '#ea580c';
+    if (score >= 4) return '#ca8a04';
+    return '#16a34a';
+  }
+
+  function assetColor(status) {
+    return { exposed: '#dc2626', vulnerable: '#ea580c', warning: '#ca8a04', secure: '#16a34a', monitored: '#6b7280' }[status] ?? '#6b7280';
+  }
+
+  function tagsHtml(tags) {
+    return `<div class="tags">${tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>`;
+  }
+
+  // ═══════════════════════════════════
+  //  RENDERERS
+  // ═══════════════════════════════════
+  function renderOTX(data) {
+    document.getElementById('panel-otx').innerHTML = `
+      <div class="panel-header">
+        <span class="panel-title">AlienVault OTX Pulses</span>
+        <span class="panel-count">${data.length} active</span>
+      </div>
+      ${data.map(d => `
+        <div class="item-row">
+          <div class="item-main">
+            <div class="item-title">${d.title}</div>
+            <div class="item-sub">${d.sub}</div>
+            <div class="item-meta">${d.meta}</div>
+            ${tagsHtml(d.tags)}
+          </div>
+          <div class="ioc-block">
+            <div class="ioc-val">${d.ioc}</div>
+            <div class="ioc-lbl">IOCs</div>
+          </div>
+          <div class="cvss-block">
+            <div class="cvss-val" style="color:${cvssColor(d.cvss)}">${d.cvss}</div>
+            <div class="cvss-lbl">CVSS</div>
+          </div>
+        </div>`).join('')}`;
+  }
+
+  function renderCVE(data) {
+    document.getElementById('panel-cve').innerHTML = `
+      <div class="panel-header">
+        <span class="panel-title">Critical CVEs</span>
+        <span class="panel-count">${data.length} found</span>
+      </div>
+      ${data.map(d => `
+        <div class="item-row">
+          <div class="item-main">
+            <div class="item-title">${d.title}</div>
+            <div class="item-sub">${d.sub}</div>
+            <div class="item-meta">${d.meta}</div>
+            ${tagsHtml(d.tags)}
+          </div>
+          <div class="cvss-block">
+            <div class="cvss-val" style="color:${cvssColor(d.cvss)}">${d.cvss}</div>
+            <div class="cvss-lbl">CVSS</div>
+          </div>
+        </div>`).join('')}`;
+  }
+
+  function renderIOC(data) {
+    document.getElementById('panel-ioc').innerHTML = `
+      <div class="panel-header">
+        <span class="panel-title">Indicators of Compromise</span>
+        <span class="panel-count">${data.length} detected</span>
+      </div>
+      ${data.map(d => `
+        <div class="item-row">
+          <div class="item-main">
+            <div class="item-title mono">${d.value}</div>
+            <div class="item-sub">${d.meta}</div>
+            ${tagsHtml(d.tags)}
+          </div>
+          <span class="badge" style="background:${cvssColor(7)};color:#fff">${d.type}</span>
+        </div>`).join('')}`;
+  }
+
+  function renderAssets(data) {
+    document.getElementById('panel-assets').innerHTML = `
+      <div class="panel-header">
+        <span class="panel-title">Exposed Assets</span>
+        <span class="panel-count">${data.length} monitored</span>
+      </div>
+      ${data.map(d => `
+        <div class="item-row">
+          <div class="item-main">
+            <div class="item-title">${d.name}</div>
+            <div class="item-sub">${d.meta}</div>
+            ${tagsHtml(d.tags)}
+          </div>
+          <span class="badge" style="background:${assetColor(d.status)};color:#fff">${d.status}</span>
+        </div>`).join('')}`;
+  }
+
+  // ═══════════════════════════════════
+  //  TAB SWITCHING
+  // ═══════════════════════════════════
+  let currentTab = 'otx';
+  const renderers = { otx: renderOTX, cve: renderCVE, ioc: renderIOC, assets: renderAssets };
+
+  function showTab(tab) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector(`[onclick="showTab('${tab}')"]`).classList.add('active');
+    document.querySelectorAll('.panel').forEach(p => p.style.display = 'none');
+    document.getElementById(`panel-${tab}`).style.display = 'block';
+    currentTab = tab;
+    load(tab)
+      .then(data => renderers[tab](data))
+      .catch(() => { document.getElementById(`panel-${tab}`).innerHTML = '<div class="loader">Failed to load data.</div>'; });
+  }
+
+  // ═══════════════════════════════════
+  //  INIT
+  // ═══════════════════════════════════
+  async function init() {
+    try {
+      const s = await load('summary');
+      document.getElementById('stat-pulses').textContent = s.active_pulses     ?? '—';
+      document.getElementById('stat-cves').textContent   = s.critical_cves     ?? '—';
+      document.getElementById('stat-assets').textContent = s.exposed_assets    ?? '—';
+      document.getElementById('stat-new').textContent    = s.new_threats_today ?? '—';
+    } catch (_) {}
+
+    showTab('otx');
+
+    const label = document.getElementById('refresh-label');
+    const stamp = () => 'Last updated: ' +
+      new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) +
+      ' · Auto-refreshes every 15 min';
+
+    label.textContent = stamp();
+    setInterval(() => { showTab(currentTab); label.textContent = stamp(); }, CONFIG.REFRESH_MS);
+  }
+
+  document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
