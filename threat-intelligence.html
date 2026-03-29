@@ -12,8 +12,8 @@
   <style>
     /* ── Page header (matches services.html pattern) ── */
     .page-hero {
-      background: linear-gradient(135deg, #0a0e1a 0%, #111827 100%);
-      border-bottom: 1px solid #1e2d44;
+      background: #161719;
+      border-bottom: 1px solid #2a2a2a;
       padding: 40px 0 32px;
     }
     .page-hero-inner {
@@ -26,12 +26,12 @@
     .page-hero h1 {
       font-size: 28px;
       font-weight: 700;
-      color: #7eb8ff;
+      color: #E6E6E6;
       margin: 0 0 4px;
     }
     .page-hero p {
       font-size: 14px;
-      color: #5a7a9a;
+      color: #aaaaaa;
       margin: 0;
     }
     .status-badge {
@@ -59,7 +59,7 @@
     }
     .refresh-time {
       font-size: 11px;
-      color: #2d4a6a;
+      color: #bbbbbb;
       margin-top: 8px;
     }
 
@@ -74,14 +74,14 @@
     @media (max-width: 480px) { .stats-grid { grid-template-columns: 1fr 1fr; } }
 
     .stat-card {
-      background: #111827;
-      border: 1px solid #1e2d44;
+      background: #161719;
+      border: 1px solid #2a2a2a;
       border-radius: 12px;
       padding: 20px;
     }
     .stat-icon  { font-size: 22px; margin-bottom: 10px; }
-    .stat-value { font-size: 32px; font-weight: 800; color: #c9e4ff; line-height: 1; }
-    .stat-label { font-size: 11px; color: #5a7a9a; margin-top: 6px; text-transform: uppercase; letter-spacing: 0.8px; }
+    .stat-value { font-size: 32px; font-weight: 800; color: #E6E6E6; line-height: 1; }
+    .stat-label { font-size: 11px; color: #aaaaaa; margin-top: 6px; text-transform: uppercase; letter-spacing: 0.8px; }
 
     /* ── Tabs ── */
     .tab-bar {
@@ -92,19 +92,19 @@
     }
     .tab-btn {
       padding: 8px 20px;
-      border: 1px solid #1e2d44;
+      border: 1px solid #2a2a2a;
       border-radius: 5px;
       cursor: pointer;
       font-size: 13px;
       font-weight: 500;
-      color: #5a7a9a;
-      background: #111827;
+      color: #aaaaaa;
+      background: #161719;
       transition: all 0.2s;
       font-family: inherit;
     }
     .tab-btn:hover:not(.active) {
-      color: #c9e4ff;
-      border-color: #2d4a6a;
+      color: #E6E6E6;
+      border-color: #bbbbbb;
     }
     .tab-btn.active {
       background: #1d4ed8;
@@ -114,14 +114,14 @@
 
     /* ── Panel (extends .card) ── */
     .panel {
-      background: #111827;
-      border: 1px solid #1e2d44;
+      background: #161719;
+      border: 1px solid #2a2a2a;
       border-radius: 12px;
       overflow: hidden;
     }
     .panel-header {
       padding: 16px 20px;
-      border-bottom: 1px solid #1e2d44;
+      border-bottom: 1px solid #2a2a2a;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -130,22 +130,22 @@
     }
     .panel-title {
       font-weight: 600;
-      color: #7eb8ff;
+      color: #E6E6E6;
       font-size: 14px;
     }
     .panel-count {
       font-size: 11px;
-      color: #5a7a9a;
-      background: #0a0e1a;
+      color: #aaaaaa;
+      background: #161719;
       padding: 3px 12px;
       border-radius: 5px;
-      border: 1px solid #1e2d44;
+      border: 1px solid #2a2a2a;
     }
 
     /* ── Rows ── */
     .item-row {
       padding: 16px 20px;
-      border-bottom: 1px solid #0f1929;
+      border-bottom: 1px solid #D8D8D8;
       display: flex;
       align-items: center;
       gap: 16px;
@@ -153,11 +153,11 @@
       transition: background 0.15s;
     }
     .item-row:last-child { border-bottom: none; }
-    .item-row:hover { background: #0d1525; }
+    .item-row:hover { background: #D8D8D8; }
     .item-main { flex: 1; min-width: 180px; }
-    .item-title { font-weight: 500; font-size: 14px; color: #c9e4ff; margin-bottom: 4px; }
-    .item-sub   { font-size: 12px; color: #a0b4c8; margin-bottom: 3px; }
-    .item-meta  { font-size: 11px; color: #5a7a9a; }
+    .item-title { font-weight: 500; font-size: 14px; color: #E6E6E6; margin-bottom: 4px; }
+    .item-sub   { font-size: 12px; color: #444444; margin-bottom: 3px; }
+    .item-meta  { font-size: 11px; color: #aaaaaa; }
 
     /* ── Tags ── */
     .tags {
@@ -168,8 +168,8 @@
     }
     .tag {
       font-size: 11px;
-      background: #1e2d44;
-      color: #7eb8ff;
+      background: #2a2a2a;
+      color: #E6E6E6;
       padding: 2px 8px;
       border-radius: 4px;
       font-weight: 500;
@@ -188,11 +188,11 @@
 
     /* ── IOC / CVSS ── */
     .ioc-block  { text-align: center; min-width: 44px; }
-    .ioc-val    { font-size: 22px; font-weight: 700; color: #7eb8ff; }
-    .ioc-lbl    { font-size: 10px; color: #5a7a9a; text-transform: uppercase; }
+    .ioc-val    { font-size: 22px; font-weight: 700; color: #E6E6E6; }
+    .ioc-lbl    { font-size: 10px; color: #aaaaaa; text-transform: uppercase; }
     .cvss-block { text-align: center; min-width: 54px; }
     .cvss-val   { font-size: 26px; font-weight: 800; }
-    .cvss-lbl   { font-size: 10px; color: #5a7a9a; text-transform: uppercase; }
+    .cvss-lbl   { font-size: 10px; color: #aaaaaa; text-transform: uppercase; }
 
     /* ── Mono ── */
     .mono { font-family: 'Courier New', monospace; font-size: 13px; }
@@ -201,7 +201,7 @@
     .loader {
       text-align: center;
       padding: 48px;
-      color: #5a7a9a;
+      color: #aaaaaa;
       font-size: 14px;
     }
   </style>
