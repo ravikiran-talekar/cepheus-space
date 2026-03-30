@@ -88,9 +88,25 @@
       background: #161719;
       border: 1px solid #2a2a2a;
       border-radius: 12px;
-      padding: 20px;
+      padding: 24px 20px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
-    .stat-icon  { font-size: 22px; margin-bottom: 10px; }
+    .stat-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 14px;
+    }
+    .stat-icon.blue { background: rgba(59,130,246,0.12); }
+    .stat-icon.red  { background: rgba(239,68,68,0.12); }
+    .stat-icon.amber{ background: rgba(245,158,11,0.12); }
+    .stat-icon.rose { background: rgba(244,63,94,0.12); }
     .stat-value { font-size: 32px; font-weight: 800; color: #E6E6E6; line-height: 1; }
     .stat-label { font-size: 11px; color: #c0c4cc; margin-top: 6px; text-transform: uppercase; letter-spacing: 0.8px; }
 
@@ -266,22 +282,42 @@
       <!-- Stat cards -->
       <div class="stats-grid">
         <div class="stat-card">
-          <div class="stat-icon">📡</div>
+          <div class="stat-icon blue">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5.636 18.364a9 9 0 0 1 0-12.728"/><path d="M18.364 5.636a9 9 0 0 1 0 12.728"/>
+              <path d="M8.464 15.536a5 5 0 0 1 0-7.072"/><path d="M15.536 8.464a5 5 0 0 1 0 7.072"/>
+              <circle cx="12" cy="12" r="1.5" fill="#3b82f6" stroke="none"/>
+            </svg>
+          </div>
           <div class="stat-value" id="stat-pulses">—</div>
           <div class="stat-label">Active Pulses</div>
         </div>
         <div class="stat-card">
-          <div class="stat-icon">⚠️</div>
+          <div class="stat-icon red">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/>
+              <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+          </div>
           <div class="stat-value" id="stat-cves">—</div>
           <div class="stat-label">Critical CVEs</div>
         </div>
         <div class="stat-card">
-          <div class="stat-icon">🛰️</div>
+          <div class="stat-icon amber">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/>
+              <line x1="6" y1="6" x2="6.01" y2="6" stroke-width="3"/><line x1="6" y1="18" x2="6.01" y2="18" stroke-width="3"/>
+            </svg>
+          </div>
           <div class="stat-value" id="stat-assets">—</div>
           <div class="stat-label">Exposed Assets</div>
         </div>
         <div class="stat-card">
-          <div class="stat-icon">🔥</div>
+          <div class="stat-icon rose">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#f43f5e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+            </svg>
+          </div>
           <div class="stat-value" id="stat-new">—</div>
           <div class="stat-label">New Threats Today</div>
         </div>
